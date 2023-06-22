@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
+import { Password } from "../services/password";
 
 // user interface
 interface UserAttrs {
@@ -26,6 +27,14 @@ const userScheme = new mongoose.Schema({
         type: String,
         required: true
     }
+});
+
+userScheme.pre('save', async function (done) {
+    if (this.isModified('password')) {
+        const hashed = await Password.toHash(this.get('password'));
+        this.set('password', hashed);
+    }
+    done();
 });
 
 

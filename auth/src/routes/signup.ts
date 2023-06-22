@@ -22,12 +22,12 @@ router.post("/api/users/signup", [
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-        console.log("USER EXISTS FOR ", email);
         throw new BadRequestError('User with that email already exists');
     }
 
     const user = User.build({ email, password });
     await user.save();
+    
     res.status(201).send(user);
 });
 
