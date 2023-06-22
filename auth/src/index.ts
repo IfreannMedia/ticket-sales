@@ -8,9 +8,17 @@ import { currentUserRouter } from "./routes/current-user";
 import { signinRouter } from "./routes/signin";
 import { signoutRouter } from "./routes/signout";
 import { signupRouter } from "./routes/signup";
+import cookieSession from "cookie-session";
 
 const app = express();
+app.set('trust proxy', true);
 app.use(json());
+app.use(
+  cookieSession({
+    signed: false,
+    secure: true
+  })
+)
 app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signupRouter);
@@ -23,6 +31,10 @@ app.all('*', async () => {
 app.use(errorHandler);
 
 const start = async () => {
+  if(!process.env.JWT_KEY){
+    throw new Error("JWT key is not defined");
+  }
+
   try {
     await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
     console.log('connected to MONGODB');
@@ -32,7 +44,7 @@ const start = async () => {
 
   app.listen(3000, () => {
     console.log("Listening on port 3000!!!!!!!!");
-  });  
+  });
 };
 
 start();
