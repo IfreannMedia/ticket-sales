@@ -1,4 +1,4 @@
-import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
+import mongoose from "mongoose";
 import { Password } from "../services/password";
 
 // user interface
@@ -29,7 +29,7 @@ const userScheme = new mongoose.Schema({
     }
 }, {
     toJSON: {
-        transform(doc, ret){
+        transform(doc, ret) {
             ret.id = ret._id;
             delete ret._id;
             delete ret.password;
