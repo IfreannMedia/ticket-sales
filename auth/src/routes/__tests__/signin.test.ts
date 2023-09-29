@@ -2,7 +2,6 @@ import request from "supertest";
 import { app } from "../../app";
 import supertest from "supertest";
 
-
 const validCreds = {
     email: 'test@test.com',
     password: 'Passw0rd'
