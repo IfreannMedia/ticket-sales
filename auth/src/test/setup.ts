@@ -1,5 +1,12 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import request from "supertest";
+import { app } from '../app';
+import { validCreds } from '../routes/__tests__/signin.test';
+
+declare global {
+    var signup: () => Promise<string[]>;
+}
 
 let mongo: MongoMemoryServer;
 
@@ -25,3 +32,9 @@ afterAll(async () => {
     }
     await mongoose.connection.close();
 });
+
+// global helper function for testing with auth cookie
+global.signup = async () => {
+    const response = await request(app).post('/api/users/signup').send(validCreds);
+    return response.get('Set-Cookie');
+}

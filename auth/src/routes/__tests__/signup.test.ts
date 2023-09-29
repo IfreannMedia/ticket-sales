@@ -1,11 +1,9 @@
 import request from "supertest";
 import { app } from "../../app";
+import { validCreds } from "./signin.test";
 
 it('returns a 201 on succesfull signup', async () => {
-    return request(app).post('/api/users/signup').send({
-        email: 'test@test.com',
-        password: 'Passw0rd'
-    }).expect(201)
+    return request(app).post('/api/users/signup').send(validCreds).expect(201)
 });
 
 it('returns a 400 with invalid email', async () => {
@@ -37,22 +35,13 @@ it('returns a 400 with missing creds', async () => {
 });
 
 it('disallows multiple emails', async () => {
-    await request(app).post('/api/users/signup').send({
-        email: 'test@test.com',
-        password: 'Passw0rd'
-    }).expect(201)
+    await request(app).post('/api/users/signup').send(validCreds).expect(201)
 
-    return request(app).post('/api/users/signup').send({
-        email: 'test@test.com',
-        password: 'Passw0rd'
-    }).expect(400)
+    return request(app).post('/api/users/signup').send(validCreds).expect(400)
 });
 
 it('sets a cookie after signup', async () => {
-    const response = await request(app).post('/api/users/signup').send({
-        email: 'test@test.com',
-        password: 'Passw0rd'
-    }).expect(201)
+    const response = await request(app).post('/api/users/signup').send(validCreds).expect(201)
 
     expect(response.get('Set-Cookie')).toBeDefined();
 });
